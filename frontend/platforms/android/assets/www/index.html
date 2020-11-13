@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name='viewport' content='width=device.width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <meta charset="utf-8">
+    <title>CartoMapping</title>
+    <link rel="stylesheet" type="text/css" href="css/ol.css">
+	<link rel='stylesheet prefetch' href='https://glyphsearch.com/bower_components/font-awesome/css/font-awesome.min.css'>
+	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+	<script src="https://use.fontawesome.com/c79e2f3459.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.1/proj4.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.1/proj4-src.js"></script>
+</head>
+
+<style>
+.pie{
+position: fixed; left: 0.5%; right:0.5%; bottom: 0%;  width:97.5%; height:3.5%; padding-left:0.5%; margin:0.5em;padding-top:0.1%; color:white; background-color:rgba(85,105,122,0.90); border-radius: 4px; font-family:Spiegel,Helvetica,Consolas,sans-serif; font-weight:600; font-size:11px; font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em;
+}
+.menu{
+position: fixed; left: 0.5%; right:0.5%; bottom: 0%; 
+ width:5em; height:5em; padding-left:0.5%; margin:4%;padding-top:0.1%; 
+ background-color:#61b8a8; border-radius: 50%; 
+ font-family:Spiegel,Helvetica,Consolas,sans-serif; font-weight:600; font-size:11px; 
+ font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em; 
+ background-image: url(img/menu.png); background-repeat: no-repeat; 
+ background-position: center; z-index:9999;
+ border:#000 0px solid;
+}
+.menu1{
+display:none; 
+position: fixed; 
+left: 0.5%; right:0.5%; top: 0%;  
+width:90%; height:80%; 
+margin-left: 4%;
+margin-top: 4%;
+color:white; 
+background-color:rgba(249, 246, 227, 0.90); 
+border-radius: 10px; 
+font-family:Spiegel,Helvetica,Consolas,sans-serif; 
+font-weight:600; font-size:11px; 
+font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em; 
+box-shadow: 5px 5px 5px #aaaaaa;
+}
+.menu2{
+display:none; 
+position: fixed; 
+left: 0%; right:0%; bottom: 0%;  
+width:100%; height:60%; 
+margin-top: 4%;
+color:white; 
+background-color:rgba(249, 246, 227, 0.90); 
+font-family:Spiegel,Helvetica,Consolas,sans-serif; 
+font-weight:600; font-size:11px; 
+font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em; 
+box-shadow: 5px 5px 5px #aaaaaa;
+}
+#botones {
+height: 95%;
+width: 95%;
+margin: 5%;
+}
+.loc{
+position: fixed; right:0.25%; bottom: 0%;  width:5em; height:5em; padding-left:0.5%; margin:1em;padding-top:0.1%; color:white; background-color:#61b8a8; border-radius: 50%; font-family:Spiegel,Helvetica,Consolas,sans-serif; font-weight:600; font-size:11px; font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em; z-index:9999;
+}
+.share{
+position: absolute; left:0.25%; bottom: 0%;  width:5em; height:5em; padding-left:0.5%; margin:0em;padding-top:0.1%; color:white; background-color:rgba(85,105,122,0.00); border-radius: 50%; font-family:Spiegel,Helvetica,Consolas,sans-serif; font-weight:600; font-size:11px; font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em; background-image: url(img/share.png); background-repeat: no-repeat; background-position: center;z-index:9999;
+}
+.TextLoc{
+position: absolute;  padding-left:0.5%; margin-top:7.5%; margin-left:35%;padding-top:0.1%; color:white; font-family:Spiegel,Helvetica,Consolas,sans-serif; font-weight:600; font-size:11px; font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em; z-index:9999; text-align: center;
+}
+.LocMenu{
+display: none; position: fixed; right:0.25%; bottom: 0%;  width:50%; height:5em; padding-left:0.5%; margin:4%;padding-top:0.1%; color:white; background-color:#61b8a8; border-radius: 40px; font-family:Spiegel,Helvetica,Consolas,sans-serif; font-weight:600; font-size:11px; font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em; z-index:9999;
+}
+#track{
+  opacity: 0;
+}
+.btn {
+  user-select: none;
+  z-index: 10;
+  width: 40%;
+  height: 27.5%;
+}
+.btn:after {
+  content: '';
+  position: center;
+  z-index: -1;
+  transition: all 0.3s;
+}
+.btn19 {
+  color:white;
+  border: none;
+  font-family: verdana, sans-serif;
+  font-size: 0.80em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  background: #61b8a8;
+  border-radius: 10px;
+  padding: 50px 10px 00px 10px;
+  box-shadow: 0 3px #5db0a1;
+  transition: all 0.3s;
+  margin: 1em;
+}
+.btn19:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 200%;
+  line-height: 40px;
+  background: #e2e0ce;
+  color: #61b8a8;
+  border-radius: 10px 10px 0 0;
+  height: 40px;
+  width: 100%;
+}
+.btn19:hover {
+  background: #61b8a8;
+}
+.btn19:active {
+  background: #61b8a8;
+  top: 2px;
+  box-shadow: 0 3px #5db0a;
+}
+.btn19:active:before {
+  color: #61b8a8;
+}
+.btnTomarDatos:before {
+  font-family: FontAwesome;
+  content: "\f044";
+}
+.btnVerDatos:before {
+  font-family: FontAwesome;
+  content: "\f278";
+}
+  
+.btnImportar:before {
+  font-family: FontAwesome;
+  content: "\f019";
+}
+.btnExportar:before {
+  font-family: FontAwesome;
+  content: "\f093 ";
+}
+.btnHerramientas:before {
+  font-family: FontAwesome;
+  content: "\f013 ";
+}
+.btnAyuda:before {
+  font-family: FontAwesome;
+  content: "\f059 ";
+}
+.btnInsert {
+  color: white;
+  border: none;
+  font-family: verdana, sans-serif;
+  font-size: 0.85em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  background: #61b8a8;
+  border-radius: 10px;
+  padding: 50px 10px 00px 10px;
+  box-shadow: 0 3px #5db0a;
+  transition: all 0.3s;
+  margin: 1em;
+}
+.btnInsert:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 200%;
+  line-height: 40px;
+  background: white;
+  color: #61b8a8;
+  border-radius: 10px 10px 0 0;
+  height: 40px;
+  width: 100%;
+  font-family: FontAwesome;
+  content: "\f090";
+}
+.btnInsert:hover {
+  background: #61b8a8;
+}
+.btnInsert:active {
+  background: #61b8a8;
+  top: 2px;
+  box-shadow: 0 3px #5db0a;
+}
+.btnInsert:active:before {
+  color: #61b8a8;
+}
+
+.btn20 {
+  color: white;
+  border: none;
+  font-family: verdana, sans-serif;
+  font-size: 0.95em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  background: #61b8a8;
+  padding: 5px 20px 5px 80px;
+  border-top-radius: 10px;
+  transition: all 0.3s;
+  width:100%;
+  height:10%;
+}
+.btn20:before {
+  position: absolute;
+  height: 100%;
+  left: 0;
+  top: 0;
+  line-height: 2.5;
+  width: 60px;
+  font-size: 125%;
+  background: #e2e0ce;
+  color: #61b8a8;
+  z-index: 2;
+  border-top-radius: 10px 0 0 10px;
+}
+.btn20:after {
+  width: 20px;
+  height: 20px;
+  background: #e2e0ce;
+  z-index: 1;
+  left: 55px;
+  top: 50%;
+  margin: -10px 0 0 -10px;
+  transform: rotate(45deg);
+}
+  body{
+  background-color:black;}
+  
+ 
+ 
+ #base {  display: inline-block; position: fixed; left:35%; widht:50%; height:10%; background-color:#1a1a26; z-index:99999; bottom:0.1%; box-shadow: 0 0 16px 10px rgba(0,0,0,.4);  }
+
+@media screen and (max-width: 480px) {
+  p { font-size:9px;}
+ }
+html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: small;
+}
+#map {
+  width: 100%;
+  height: 100%;
+  z-index:0;
+}
+.leftMenu{
+ height: 100%;
+ background-color:  rgba(127,179,213,0.05);
+ position: fixed;
+ left: 0;
+ top:-1000px;
+ width: 250px;
+ height:100%;
+ transition: all ease 1s;
+ overflow: hidden;
+ transition: 1s cubic-bezier(.8, .5, .2, 1.4);
+ 
+ 
+ 
+ 
+}
+.hamburger{
+ width : 250px;
+ height : 35px;
+ border-radius: 2.5%;
+ background-color: rgba(127,179,213,0.5);
+ float : left;
+ margin-left: 0%;
+ margin-top: 0%; 
+ text-align: left;
+ cursor : pointer; 
+ box-shadow: 0px 3px 4px rgba(0,0,0,.5); 
+ position: relative; 
+ z-index:999;
+ 
+}
+.hamburger.open{
+ background-color: #edf1f2;
+ transition: all ease .5s;
+}
+
+.open span:nth-child(1){
+ background-color: #fff;
+ transform: rotate(45deg);
+ transition-timing-function  : ease-in-out;
+ position: absolute;
+ top: 5px;
+ right: 8px;
+ width: 25px;
+ transition: all ease .5s;
+ border-radius: 10px; 
+ 
+}
+.open span:nth-child(2){
+ background-color  : #fff;
+ transition-timing-function  : ease-in-out;
+ margin-top: 18px;
+ opacity: 0;
+ transition: all ease .5s;
+}
+.open span:nth-child(3){
+ background-color  : #fff;
+ transform: rotate(-45deg);
+ transition-timing-function  : ease-in-out;
+ margin-top: 0px;
+ position: absolute;
+ top: 18px;
+ right: 8px;
+ width: 25px;
+ transition: all ease .5s;
+ border-radius: 10px; 
+}
+.openMenu{
+ top:0;
+ width: 250px;
+ transition: all ease 1s;
+ /*overflow: hidden;*/
+ transition: .5s cubic-bezier(.8, .5, .2, 1.4);
+}
+.leftMenuList{
+ margin-top: 35px;
+ list-style: none;
+ padding: 0;    
+}
+.leftMenuList li{
+ width: 250px;
+ /* height: 40px; */
+ line-height: 40px;
+ color: #fff;
+ border-bottom: 1px solid #00bcd6; 
+ /* padding : 5px; */
+ font-size: 11px;
+ /*background-color:  rgba(127,179,213,0.25);*/
+}
+.leftMenuList li:hover{
+ background-color: #00bcd6;
+ transition: all ease .5s;
+ cursor : pointer; 
+ background-color:  rgba(127,179,213,0.25);
+}
+.leftMenuList li a{
+ text-decoration: none;
+ color : #fff;  
+}
+.leftMenuList li a svg{
+ width : 40px;
+ height : 40px;
+ float : left;
+ margin-left: 0px;   
+}
+.leftMenuList li a span{
+ text-decoration: none;
+ color : #fff; 
+ margin-left: 15px;
+ width : 100%;
+}
+i.fa {
+ font-size: 25px;
+ padding: 9px;
+ width: 30px;
+ text-align: center;
+}
+.leftMenuList li ul li{
+ padding: 0px;
+ line-height: 30px;
+ transition: all .4s;
+ box-sizing: border-box;
+ background-color:  rgba(127,179,213,0.25);
+}
+
+.leftMenuList li ul li:hover{
+ background: #4DD0E1;
+ transition: all .4s;
+ background-color:  rgba(127,179,213,0.35);
+ 
+}
+.leftMenuList li ul li ul li{
+ padding: 5px;
+ background-color:  rgba(127,179,213,0.25);
+}
+.leftMenuList li ul li ul li a span{
+ color:#00838f;
+}
+.leftMenuList li ul li ul li:hover{
+ background-color:  rgba(127,179,213,0.35);
+}
+.dropdown {
+ color: #fff;
+ text-decoration: none;
+ margin-bottom: 5px;
+ display: block;
+ position: relative;
+}
+.active + .dropdownlist {
+ width: 100%;
+ height: auto;
+ line-height: 30px;
+ padding: 0px;
+ margin-left: 0px;
+ background-color:  rgba(127,179,213,0.25);
+}
+.active + .dropdownlist:hover{
+ background-color:  rgba(127,179,213,0.35);
+}
+.dropdownlist {
+ width: 0;
+ height: 0;
+ overflow: hidden;
+}
+.dropdown:before {
+ font-family: FontAwesome;
+ content: "\f105";
+ transition: all .4s;
+ /*padding-right: 5px;*/
+ right: 20px;
+ position: absolute;
+ top: 4px;
+}
+.dropdown.active:before {
+ font-family: FontAwesome;
+ content: '\f107';
+ transition: all .4s;
+ padding-right: 5px;
+}
+.leftMenu:not(.openMenu)  li > .dropdownlist{
+ pointer-events: none;
+ height:0;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/*Estilo para popup*/
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 500ms;
+  visibility: hidden;
+  opacity: 0;
+}
+.overlay:target {
+  visibility: visible;
+  opacity: 1;
+}
+.popup {
+  margin: 70px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  width: 30%;
+  position: relative;
+  transition: all 5s ease-in-out;
+}
+.popup h2 {
+  margin-top: 0;
+  color: #333;
+  font-family: Tahoma, Arial, sans-serif;
+}
+.popup .close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  transition: all 200ms;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+.popup .close:hover {
+  color: #06D85F;
+}
+.popup .content {
+  max-height: 30%;
+  overflow: auto;
+}
+/*TABLAS*/
+.customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+.customers td, .customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+.customers tr:nth-child(even){background-color: #f2f2f2;}
+.customers tr:hover {background-color: #ddd;}
+.customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: rgba(127,179,213,0.95);
+    color: white;
+}
+.button {
+background-color: rgba(127,179,213,0.45);
+    border: none;
+    color: rgb(38, 38, 38);
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 11px;
+    margin: 4px 2px;
+    cursor: pointer;
+ border-radius:10px;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+ box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+</style>
+
+<body onload="start()">
+	<div id="contenedor" style="height:100%; width:100%; left:0;top:0;position:absolute;">
+		<div id="olMap" style="height:100%;width:100%; left:0;top:0; position: absolute;"></div>
+	</div>
+	<a type="button" class="menu" onclick="MenuOpen()"></a>
+	
+	<!-- BARRICA DE POSICIÓN -->
+	<label for="track">
+	
+		<div id="LocMenu" class="LocMenu">
+			<div id="TextLoc" class="TextLoc"></div>
+			<a class="share" onclick="share()"></a>
+		</div>
+			
+		<a id="LocContainer" class="loc" >
+			<a id="loc" onclick="MenuLocOpen()" style=" position: fixed; right:0.25%; bottom: 0%;  width:5em; height:5em; padding-left:0.5%; margin:1em;padding-top:0.1%; color:white; background-color:rgba(85,105,122,0.0); border-radius: 50%; font-family:Spiegel,Helvetica,Consolas,sans-serif;	font-weight:600; font-size:11px; font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em; z-index:9999; background-image: url(img/localization.png); background-repeat: no-repeat; background-position: center;  z-index:9999;"></a>		
+		</a>
+		
+		<input id="track" type="checkbox" style="z-index:9; position: fixed; rigth: 10%; right:0.5%; bottom: 0%;  width:40px; height:40px; padding-left:0.5%; margin:2.5em;padding-top:0.1%; color:white; background-color:rgba(85,105,122,0.0); border-radius: 4px; font-family:Spiegel,Helvetica,Consolas,sans-serif;	font-weight:600; font-size:11px; font-weight:400; line-height:1.2; max-width:100%;font: 62.5%/1.6em;" />
+		
+	</label>
+
+	
+	<!-- MENU PRINCIPAL CON PATATAS -->
+	
+	<div id="menu2" class="menu1">
+		<div id="botones">
+			<button class="btn btn19 btnTomarDatos" onclick="TomarDatos()">Toma de datos</button>
+			<button class="btn btn19 btnVerDatos" onclick="VerDatos()">Ver datos</button>
+			<button class="btn btn19 btnExportar">Exportar</button>	
+			<button class="btn btn19 btnImportar">Importar</button>
+			<button class="btn btn19 btnHerramientas">Herramientas</button>
+			<button class="btn btn19 btnAyuda">Ayuda</button>
+		</div>
+	</div>
+	
+ 	<div id="VerDatos" class="menu2" style="display:none;">
+		<button class="btn btn20 btnVerDatos">Ver datos</button>
+		<div id="ContDatos" style="padding:4%;">
+				<form class="form-signin"  role="form">
+					<select name="sources" id="sources" onchange="formular.call(this, event)">
+						<option value="" selected></option>
+						<option value="cultivos">cultivos</option>
+						<option value="puntos_interes">puntos_interes</option>
+						<option value="supermercados">supermercados</option>
+					</select> 
+					<button id="BtnSelectCultivos" class="btn btn-lg btn-primary btn-block" style="display:none;" type="button">Registrar</button>
+					<button id="BtnSelectPuntos" class="btn btn-lg btn-primary btn-block" style="display:none;" type="button">Registrar</button>
+					<button id="BtnSelectSupermercados" class="btn btn-lg btn-primary btn-block" style="display:none;" type="button">Registrar</button>
+					<p id="text" class="form-signin-heading"></p>
+					<table id="table" class="table-fill customers">
+							<thead>
+								<tr>
+									<th class="text-left">ID</th>
+									<th class="text-left">TIPO</th>
+									<th class="text-left">LAT</th>	
+									<th class="text-left">LON</th>						
+								</tr>
+							</thead>
+					</table>			
+				</form>
+						
+		</div>
+	</div>
+
+	 <div id="TomarDatos" class="menu2" style="display:none;">
+		<button class="btn btn20 btnTomarDatos">Tomar datos</button>
+		<div id="ContDatos" style="padding:4%;">
+			<div class="">
+				<div class="">
+				<select name="sources" id="sources" onchange="formular.call(this, event)">
+				  <option value="" selected></option>
+				  <option value="cultivos">cultivos</option>
+				  <option value="puntos_interes">puntos_interes</option>
+				  <option value="supermercados">supermercados</option>
+				</select> 
+				</div>
+				<form id="cultivos" class="form-signin" role="form" style="display:none">
+					<input type="text" id="tipo" name="tipo" class="form-control" placeholder="Tipo" required/>
+					<input type="text" id="latitud1" name="latitud" class="form-control" style="display:block;" placeholder="Tipo" required/>
+					<input type="text" id="longitud1" name="longitud" class="form-control" style="display:block;" placeholder="Tipo" required/>
+					<button id="BtnInsertCultivos" class="btn btnInsert" type="button"></button>
+					<p id="text" class="form-signin-heading"></p>		
+				</form> 
+				
+				<form id="puntos_interes" class="form-signin" role="form" style="display:none">
+					<input type="text" id="nombrePunto" name="nombrePunto" class="form-control" placeholder="Nombre" required/>
+					<input type="text" id="descripcion" name="descripcion" class="form-control" placeholder="Descripcion"/>
+					<input type="text" id="latitud2" name="latitud2" class="form-control" style="display:block;" placeholder="Latitud" required/>
+					<input type="text" id="longitud2" name="longitud2" class="form-control" style="display:block;" placeholder="Longitud" required/>
+					<button id="BtnInsertPuntos" class="btn btnInsert" type="button"></button>
+					<p id="text" class="form-signin-heading"></p>		
+				</form> 
+				
+				<form id="supermercados" class="form-signin" role="form" style="display:none">
+					<input type="text" id="nombreSupermercado" name="nombreSupermercado" class="form-control" placeholder="Nombre" required/>
+					<input type="text" id="latitud3" name="latitud3" class="form-control" style="display:block;" placeholder="Latitud" required/>
+					<input type="text" id="longitud3" name="longitud3" class="form-control" style="display:block;" placeholder="Longitud" required/>
+					<button id="BtnInsertSupermercados" class="btn btnInsert" type="button"></button>
+					<p id="text" class="form-signin-heading"></p>		
+				</form> 
+				
+				
+			</div>
+			<div id="lat"></div><div id="lon"></div>
+						
+		</div>
+	</div>
+	<script>
+		function formular(event) {
+			if (this.options[this.selectedIndex].text == "cultivos"){
+				document.getElementById('cultivos').style.display = "block";
+				document.getElementById('BtnSelectCultivos').style.display = "block";
+				document.getElementById('puntos_interes').style.display = "none";
+				document.getElementById('supermercados').style.display = "none";
+				document.getElementById('BtnSelectPuntos').style.display = "none";
+				document.getElementById('BtnSelectSupermercados').style.display = "none";
+			}
+			if (this.options[this.selectedIndex].text == "puntos_interes"){
+				document.getElementById('puntos_interes').style.display = "block";
+				document.getElementById('supermercados').style.display = "none";
+				document.getElementById('cultivos').style.display = "none";
+				document.getElementById('BtnSelectPuntos').style.display = "block";
+				document.getElementById('BtnSelectCultivos').style.display = "none";
+				document.getElementById('BtnSelectSupermercados').style.display = "none";
+			}			
+			if (this.options[this.selectedIndex].text == "supermercados"){
+				document.getElementById('supermercados').style.display = "block";
+				document.getElementById('puntos_interes').style.display = "none";
+				document.getElementById('cultivos').style.display = "none";
+				document.getElementById('BtnSelectPuntos').style.display = "none";
+				document.getElementById('BtnSelectCultivos').style.display = "none";
+				document.getElementById('BtnSelectSupermercados').style.display = "block";
+			}
+			if (this.options[this.selectedIndex].text == ""){
+				document.getElementById('supermercados').style.display = "none";
+				document.getElementById('puntos_interes').style.display = "none";
+				document.getElementById('cultivos').style.display = "none";
+				document.getElementById('BtnSelectPuntos').style.display = "none";
+				document.getElementById('BtnSelectCultivos').style.display = "none";
+				document.getElementById('BtnSelectSupermercados').style.display = "none";
+			}
+		
+		}
+	</script>
+	<script src="https://openlayers.org/en/v3.20.1/build/ol.js"></script>
+	<script>
+
+	
+		function MenuOpen() {
+			if (document.getElementById("menu2").style.display == "block") {
+				document.getElementById("menu2").style.display="none";
+				document.getElementById('VerDatos').style.display = "none";
+				document.getElementById('TomarDatos').style.display = "none";
+			}
+			
+			else {
+				document.getElementById("menu2").style.display="block";
+				document.getElementById('VerDatos').style.display = "none";
+				document.getElementById('TomarDatos').style.display = "none";
+			}
+		}
+		
+		function MenuLocOpen() {
+			if (document.getElementById("LocMenu").style.display == "block") {
+				document.getElementById("LocMenu").style.display="none";
+				document.getElementById("LocContainer").style.background="rgba(85,105,122,0.9)";
+				
+			}
+			
+			else {
+				document.getElementById("LocMenu").style.display="block";
+				document.getElementById("LocContainer").style.background="rgba(85,105,122,0.0)";
+				
+			}
+		}
+		
+		function start(){
+			document.getElementById('track').checked = false;
+		}
+		
+		function VerDatos(){
+		
+		document.getElementById('menu2').style.display = "none";
+		document.getElementById('VerDatos').style.display = "block";
+		}
+		
+		function TomarDatos(){
+		
+		document.getElementById('menu2').style.display = "none";
+		document.getElementById('TomarDatos').style.display = "block";
+		
+		
+		}
+		
+		
+		//SELECTOR
+
+	</script>
+	
+    
+
+	<script type="text/javascript" src="js/proj4.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+    <script type="text/javascript" src="js/map.js"></script>
+	<script src="js/select.js"></script><script src="js/insert.js"></script>
+	<script src="RequestService.js"></script>
+	
+	<script type="text/javascript" src="cordova.js"></script>
+	
+</body>
+</html>
