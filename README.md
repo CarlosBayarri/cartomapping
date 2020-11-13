@@ -30,7 +30,7 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 
 ## Team
 
-[![Carlos Bayarri Cebrecos](https://avatars2.githubusercontent.com/u/31616221?s=400&u=f32637806040e934196bf7850b798a36867f5220&v=4)](https://github.com/CarlosBayarri)|[![Raquel Luján García-Muñoz](https://avatars3.githubusercontent.com/u/44098613?s=460&u=c3823afb3ff45b2caf4c2fe9a0f95c233d57ce32&v=4)](https://github.com/ralugar)
+[![Carlos Bayarri Cebrecos](https://avatars2.githubusercontent.com/u/31616221?s=250&u=f32637806040e934196bf7850b798a36867f5220&v=4)](https://github.com/CarlosBayarri)|[![Raquel Luján García-Muñoz](https://avatars3.githubusercontent.com/u/44098613?s=250&u=c3823afb3ff45b2caf4c2fe9a0f95c233d57ce32&v=4)](https://github.com/ralugar)
 ---|---
 [Carlos Bayarri Cebrecos ](https://github.com/CarlosBayarri)|[Raquel Luján García-Muñoz](https://github.com/ralugar)
 
