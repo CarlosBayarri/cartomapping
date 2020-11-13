@@ -1,5 +1,5 @@
 
-# ![Cover](https://firebasestorage.googleapis.com/v0/b/portfolio-15d76.appspot.com/o/projects%2FntMZYCBGABY3FjvfHspb%2FCBC%20-%20PORTFOLIO%20(4).jpg?alt=media&token=ae2218e9-1eda-4bf8-bc3a-3e6e698b02ed)
+# ![Cover](https://github.com/CarlosBayarri/cartomapping/blob/main/cover_cartomapping.jpg)
 
 # CARTOMAPPING
 Cartomapping is an application that allows you to capture, display and manipulate georeferenced data from your mobile device, interacting directly with a server so that you can have your data in real time and anywhere. 
